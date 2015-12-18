@@ -221,7 +221,7 @@ public  void createTableStructure() {
                 .unique().buildCompositeIndex();
         mgmt.setConsistency(regNumberj, ConsistencyModifier.LOCK);// lock事务
 
-        // 建立边 企业到人
+
         EdgeLabel enter2person = mgmt.makeEdgeLabel(&quot;enterprise2person&quot;)
                 .multiplicity(Multiplicity.MULTI).make(); // 双向的
         EdgeLabel person2enter = mgmt.makeEdgeLabel(&quot;person2enterprise&quot;)
@@ -237,43 +237,27 @@ public  void createTableStructure() {
 
 }
 
-/***
- * 创建企业名称节点
- * 
- * @param enterPriseName
- * @param regNumber
- */
+
 
 public static Vertex createEnterpriseVertex(String enterpriseName,
         String regNumber) {
-    // 创建节点
     Vertex enterpriseVertex = tx.addVertexWithLabel(&quot;enterprise&quot;);
 
-    // 设置属性 企业名称
     if (!&quot;&quot;.equals(enterpriseName))
         enterpriseVertex.setProperty(&quot;enterpriseName&quot;, enterpriseName);
 
-    // 设置属性 企业注册号
     if (!&quot;&quot;.equals(regNumber))
         enterpriseVertex.setProperty(&quot;regNumber&quot;, regNumber);
 
-    // 设置企业节点类型
     enterpriseVertex.setProperty(&quot;nodeType&quot;, &quot;companys&quot;);
 
-    logger.info(&quot;创建企业:&quot; + enterpriseName + &quot;{} &quot;, enterpriseVertex);
     return enterpriseVertex;
 }
 
 
-/**
- * 设置人员节点的属性
- * 
- * @param personVertex
- * @param position
- */
 public static void setEnterpriseVertex(Vertex enterpriseVertex,
         String enterpriseName, String regNumber) {
-    // 设置节点类型属性
+
     enterpriseVertex.setProperty(&quot;nodeType&quot;, &quot;companys&quot;);
     String enterName = enterpriseVertex.getProperty(&quot;enterpriseName&quot;);
     String enterRegNumber = enterpriseVertex.getProperty(&quot;regNumber&quot;);
@@ -286,24 +270,14 @@ public static void setEnterpriseVertex(Vertex enterpriseVertex,
         enterpriseVertex.setProperty(&quot;regNumber&quot;, regNumber);
 
     }
-    logger.info(&quot;设置企业{}节点属性:{},{}&quot;,enterpriseVertex.getProperty(&quot;enterpriseName&quot;),enterpriseVertex.getProperty(&quot;regNumber&quot;), enterpriseVertex);
+
 
 }
 
-/***
- * 根据企业名称判断企业节点是否存在
- * 
- * @param enterpriseName
- *            企业名称
- * @param regNumber
- *            企业注册号
- * @return
- */
 public static Vertex isExistEnterpriseVertex(String enterpriseName) {
 
     Vertex enterpriseNode = null;
-    // 查找当前的企业是否存在
-    // 判断是否有一个表名为enterprise，里面有entername点集合
+
     Iterable iterable = tx.query().has(&quot;label&quot;, &quot;enterprise&quot;)
             .has(&quot;enterpriseName&quot;, enterpriseName).vertices();
 
@@ -316,15 +290,10 @@ public static Vertex isExistEnterpriseVertex(String enterpriseName) {
     return enterpriseNode;
 }
 
-/**
- * 根据注册号查找企业节点是否存在
- * 
- * @param regNumber
- * @return
- */
+
 public static Vertex isExistEnterpriseVertexByRegnumber(String regNumber) {
     Vertex enterpriseNode = null;
-    // 根据注册号查找企业节点是否存在
+
     Iterable iterable = tx.query().has(&quot;label&quot;, &quot;enterprise&quot;)
             .has(&quot;regNumber&quot;, regNumber).vertices();
 
@@ -337,55 +306,29 @@ public static Vertex isExistEnterpriseVertexByRegnumber(String regNumber) {
     return enterpriseNode;
 }
 
-/***
- * 创建相关人员节点
- * 
- * @param name
- *            人员名称
- * @param position
- *            人员职位
- */
+
 public static Vertex createPersonVertex(String personName) {
 
-    // 创建人员节点
+
     Vertex personVertex = tx.addVertexWithLabel(&quot;person&quot;);
-    // 设置属性
+
     personVertex.setProperty(&quot;personName&quot;, personName);
-    // 设置节点类型属性
+
     personVertex.setProperty(&quot;nodeType&quot;, &quot;person&quot;);
 
-    logger.info(&quot;创建人员:&quot; + personName + &quot;{} &quot;, personVertex);
-    return personVertex;
+        return personVertex;
 }
 
-/**
- * 设置人员节点的属性
- * 
- * @param personVertex
- * @param position
- */
+
 public static void setPersonVertexProperty(Vertex personVertex) {
-    // 设置节点类型属性
+
     personVertex.setProperty(&quot;nodeType&quot;, &quot;person&quot;);
-    logger.info(&quot;设置人员:{}节点属性:{}&quot;,personVertex.getProperty(&quot;personName&quot;), personVertex);
 
 }
 
-/***
- * 定义边
- * 
- * @param enterpriseNode
- *            企业节点
- * @param personVertex
- *            人员节点
- * @param personType
- *            人员类型
- * @param position
- *            职位
- */
 public static void createTitanEdge(Vertex enterpriseNode,
         Vertex personVertex, String position) {
-    // 定义边
+
     TitanEdge titanEdge = null;
     titanEdge = (TitanEdge) enterpriseNode.addEdge(&quot;enterprise2person&quot;,
             personVertex);
@@ -394,16 +337,7 @@ public static void createTitanEdge(Vertex enterpriseNode,
     titanEdge.setProperty(&quot;position&quot;, set);
 }
 
-/***
- * 设置边属性
- * 
- * @param enterpriseNode
- *            企业节点
- * @param personVertex
- *            人员节点
- * @param position
- *            职位
- */
+
 public static void setTitanEdgeProperty(TitanEdge titanEdge, String position) {
 
     Set set = titanEdge.getProperty(&quot;position&quot;);
@@ -413,17 +347,8 @@ public static void setTitanEdgeProperty(TitanEdge titanEdge, String position) {
     set.add(position);
     titanEdge.setProperty(&quot;position&quot;, set);
 
-    logger.info(&quot;设置边的职位:{}&quot;,set);
-
 }
 
-/**
- * 判断企业到人的边是否存在
- * 
- * @param enterpriseNode
- * @param personVertex
- * @return
- */
 public static TitanEdge isExistTitanE2PEdge(Vertex enterpriseNode,
         Vertex personVertex) {
     TitanEdge titanEdge = null;
@@ -440,13 +365,6 @@ public static TitanEdge isExistTitanE2PEdge(Vertex enterpriseNode,
     return titanEdge;
 }
 
-/**
- * 判断人到企业的边是否存在
- * 
- * @param enterpriseNode
- * @param personVertex
- * @return
- */
 public static TitanEdge isExistTitanP2EEdge(Vertex enterpriseNode,
         Vertex personVertex) {
     TitanEdge titanEdge = null;
@@ -462,19 +380,9 @@ public static TitanEdge isExistTitanP2EEdge(Vertex enterpriseNode,
     }
     return titanEdge;
 }
-
-/***
- * 判断企业节点是否存在
- * 
- * @param enterpriseName
- *            企业名称
- * @return Vertex
- */
 public static Vertex isExistPersonVertex(String personName) {
 
     Vertex personNode = null;
-    // 查找当前的人员节点是否存在
-    // 判断是否有一个表名为enterprise，里面有entername点集合
     Iterable iterable = tx.query().has(&quot;label&quot;, &quot;person&quot;)
             .has(&quot;personName&quot;, personName).vertices();
     Iterator&lt;Vertex&gt; ite = iterable.iterator();
@@ -484,12 +392,7 @@ public static Vertex isExistPersonVertex(String personName) {
     return personNode;
 }
 
-/**
- * 根据企业名称查询关联的人员关系
- * 
- * @param enterpriseName
- * @return
- */
+
 public  List&lt;String&gt; queryEnterprise(String enterpriseName) {
     List&lt;String&gt; nameList = new ArrayList&lt;String&gt;();
     beginTransaction();
@@ -500,17 +403,14 @@ public  List&lt;String&gt; queryEnterprise(String enterpriseName) {
     if (ite.hasNext()) {
         enterprise = ite.next();
 
-        // 定义企业到人的边的关系查找条件
         VertexQuery tmp = enterprise.query().labels(&quot;enterprise2person&quot;)
                 .direction(Direction.OUT);
 
-        // 查找出企业下面关联的人
         Iterator&lt;Vertex&gt; personVertex = tmp.vertices().iterator();
 
         while (personVertex.hasNext()) {
             Vertex personVertex1 = personVertex.next();
 
-            // 查找企业2人的边，找关系，并找出相应职位
             TitanEdge titanEdge = null;
             Iterable&lt;TitanEdge&gt; edges = ((TitanVertexQuery) tmp).adjacent(
                     (TitanVertex) personVertex1).titanEdges();
@@ -543,17 +443,12 @@ public  List&lt;String&gt; queryEnterprise(String enterpriseName) {
     return nameList;
 }
 
-/**
- * 根据企业名称查询关联的人员关系
- * 
- * @param enterpriseName
- * @return
- */
+
 public  List&lt;String&gt; queryEnterprise2(String enterpriseName) {
     List&lt;String&gt; nameList = new ArrayList&lt;String&gt;();
     beginTransaction();
     CacheVertex enterprise;
-    // 根据条件查找企业
+
     Iterable enterpriseiterable = tx.query().has(&quot;label&quot;, &quot;enterprise&quot;)
             .has(&quot;enterpriseName&quot;, enterpriseName).vertices();
     Iterator&lt;Vertex&gt; ite = enterpriseiterable.iterator();
@@ -561,7 +456,7 @@ public  List&lt;String&gt; queryEnterprise2(String enterpriseName) {
         enterprise = (CacheVertex) ite.next();
         Iterable&lt;TitanEdge&gt; edges = enterprise.getEdges();
         Iterator&lt;TitanEdge&gt; edgesIterator = edges.iterator();
-        // 查找企业2人的边，找关系，并找出相应职位
+
         TitanEdge titanEdge = null;
         while (edgesIterator.hasNext()) {
             titanEdge = edgesIterator.next();
@@ -579,8 +474,6 @@ public  List&lt;String&gt; queryEnterprise2(String enterpriseName) {
             String personName = otherVertex.getProperty(&quot;personName&quot;);
             String nodeType = otherVertex.getProperty(&quot;nodeType&quot;);
 
-            logger.info(personName + &quot; 在 &quot; + enterpriseName + &quot; 担任&quot;
-                    + posStr + &quot; 职务&quot;);
             String json = &quot;{name:&apos;&quot; + personName + &quot;&apos;, position:&apos;&quot; + posStr
                     + &quot;&apos;,nodeType:&apos;&quot; + nodeType + &quot;&apos;}&quot;;
             logger.info(&quot;人员json：&quot; + json);
@@ -594,12 +487,7 @@ public  List&lt;String&gt; queryEnterprise2(String enterpriseName) {
     return nameList;
 }
 
-/**
- * 根据人员名称查找相关企业
- * 
- * @param personName
- * @return
- */
+
 public  List&lt;String&gt; queryPerson(String personName) {
     List&lt;String&gt; nameList = new ArrayList&lt;String&gt;();
     beginTransaction();
@@ -612,7 +500,7 @@ public  List&lt;String&gt; queryPerson(String personName) {
             person = (CacheVertex) ite.next();
         }
 
-        // 查找人2企业的边，找关系，并找出相应职位
+
         TitanEdge titanEdge = null;
         Iterable&lt;TitanEdge&gt; edges = person.getEdges();
         Iterator&lt;TitanEdge&gt; iterEdges = edges.iterator();
@@ -635,8 +523,6 @@ public  List&lt;String&gt; queryPerson(String personName) {
             String regNumber = otherVertex.getProperty(&quot;regNumber&quot;);
 
             String nodeType = otherVertex.getProperty(&quot;nodeType&quot;);
-            logger.info(&quot;与 -&quot; + personName + &quot;-&quot; + &quot;相关的企业有:{}&quot;,
-                    enterpriseName);
 
             String json = &quot;{name:&apos;&quot; + enterpriseName + &quot;&apos;,regNumber:&apos;&quot;
                     + regNumber + &quot;&apos;,personName:&apos;&quot; + personName
