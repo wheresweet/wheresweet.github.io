@@ -70,6 +70,56 @@ var _hmt = _hmt || [];
     <header>
       
         <div class="icon"></div>
+        <time datetime="2015-12-17T15:38:12.000Z"><a href="/2015/12/17/《初入titan图数据库》学习笔记（二）/">2015-12-17</a></time>
+      
+      
+  
+    <h1 class="title"><a href="/2015/12/17/《初入titan图数据库》学习笔记（二）/">《初入titan图数据库》学习笔记（二）</a></h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h2 id="titan_u56FE_u6570_u636E_u2014_u2014_Configuration"><a href="#titan_u56FE_u6570_u636E_u2014_u2014_Configuration" class="headerlink" title="titan图数据—— Configuration"></a>titan图数据—— Configuration</h2><p><em>关于titan图数据库的资料，网上的资料太少了，尤其是中文资料。最近小忍在学习关于titan，查看官网文档，小忍为预防老年痴呆的现象频发，索性记录下学习足迹</em></p>
+<p>具体参考官网文档：<a href="http://s3.thinkaurelius.com/docs/titan/0.5.4/index.html">http://s3.thinkaurelius.com/docs/titan/0.5.4/index.html</a></p>
+<p>titan图形数据库集群由一个或多个titan实例组成。要打开一个titan 的示例，必须提供对titan的相应的配置。</p>
+<p>titan配置是指titan应该使用哪些组件，控制一个titan部署的所有业务环节，并提供了大量优化titan集群的最佳性能的选项。</p>
+<p>至少，titan的配置必须定义存储后端应该使用持久性引擎。part3，‘后端存储’列出了所有支持的持久引擎及如何对它们进行配置。<br>如果先进的图形查询支持（如全文搜索，地理搜索，范围查询）需要额外的配置后端的索引。见第4部分，“索引后端”的详细信息，如果查询性能是个问题，那么应该启用缓存。</p>
+<p>1、基本配置</p>
+<p>1.1、Cassandra+Elasticsearch</p>
+<p>设置titan使用本地Cassandra持久性引擎存储及远程的搜索引擎。</p>
+<pre><code>storage.backend=cassandra
+storage.hostname=localhost
+
+index.search.backend=elasticsearch
+index.search.hostname=100.100.101.1,100.100.101.2
+index.search.elasticsearch.client-only=true
+</code></pre>
+      
+    </div>
+    <footer>
+      
+        
+          <div class="alignleft">
+            <a href="/2015/12/17/《初入titan图数据库》学习笔记（二）/#more" class="more-link">阅读更多</a>
+          </div>
+        
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+  <article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
         <time datetime="2015-12-17T15:38:12.000Z"><a href="/2015/12/17/《初入titan图数据库》学习笔记（一）/">2015-12-17</a></time>
       
       
@@ -123,7 +173,7 @@ index.search.hostname=192.168.90.11 本地es服务
   <h3 class="title">標籤</h3>
   <ul class="entry">
   
-    <li><a href="/tags/titan-图数据库/">titan 图数据库</a><small>1</small></li>
+    <li><a href="/tags/titan-图数据库/">titan 图数据库</a><small>2</small></li>
   
   </ul>
 </div>

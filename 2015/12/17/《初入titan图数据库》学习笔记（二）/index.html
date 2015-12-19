@@ -1,0 +1,265 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>《初入titan图数据库》学习笔记（二） | 请称偶穷光蛋蛋</title>
+  <meta name="author" content="wheresweet">
+  
+  <meta name="description" content="java mysql elasticsearch jQuery bootstrap titan">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="《初入titan图数据库》学习笔记（二）"/>
+  <meta property="og:site_name" content="请称偶穷光蛋蛋"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="请称偶穷光蛋蛋" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+
+<script type="text/javascript">
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?7ea69d6de48b6d7cd2a53bcc519beadc";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">请称偶穷光蛋蛋</a></h1>
+  <h2><a href="/">想你  是一种忧戚的美丽和甜蜜的失意   心里面  却是一股什么也代替不了的温馨</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">首页</a></li>
+    
+      <li><a href="/archives">归档</a></li>
+    
+      <li><a href="/coding">编程技术</a></li>
+    
+      <li><a href="/bigData">大数据技术</a></li>
+    
+      <li><a href="/dataV">数据可视化</a></li>
+    
+      <li><a href="/about">关于</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-12-17T15:38:12.000Z"><a href="/2015/12/17/《初入titan图数据库》学习笔记（二）/">2015-12-17</a></time>
+      
+      
+  
+    <h1 class="title">《初入titan图数据库》学习笔记（二）</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h2 id="titan_u56FE_u6570_u636E_u2014_u2014_Configuration"><a href="#titan_u56FE_u6570_u636E_u2014_u2014_Configuration" class="headerlink" title="titan图数据—— Configuration"></a>titan图数据—— Configuration</h2><p><em>关于titan图数据库的资料，网上的资料太少了，尤其是中文资料。最近小忍在学习关于titan，查看官网文档，小忍为预防老年痴呆的现象频发，索性记录下学习足迹</em></p>
+<p>具体参考官网文档：<a href="http://s3.thinkaurelius.com/docs/titan/0.5.4/index.html" target="_blank" rel="external">http://s3.thinkaurelius.com/docs/titan/0.5.4/index.html</a></p>
+<p>titan图形数据库集群由一个或多个titan实例组成。要打开一个titan 的示例，必须提供对titan的相应的配置。</p>
+<p>titan配置是指titan应该使用哪些组件，控制一个titan部署的所有业务环节，并提供了大量优化titan集群的最佳性能的选项。</p>
+<p>至少，titan的配置必须定义存储后端应该使用持久性引擎。part3，‘后端存储’列出了所有支持的持久引擎及如何对它们进行配置。<br>如果先进的图形查询支持（如全文搜索，地理搜索，范围查询）需要额外的配置后端的索引。见第4部分，“索引后端”的详细信息，如果查询性能是个问题，那么应该启用缓存。</p>
+<p>1、基本配置</p>
+<p>1.1、Cassandra+Elasticsearch</p>
+<p>设置titan使用本地Cassandra持久性引擎存储及远程的搜索引擎。</p>
+<pre><code>storage.backend=cassandra
+storage.hostname=localhost
+
+index.search.backend=elasticsearch
+index.search.hostname=100.100.101.1,100.100.101.2
+index.search.elasticsearch.client-only=true
+</code></pre><a id="more"></a>
+<p>1.2、 HBase+Caching</p>
+<p>设置titan使用hbase后远程后端存储及titan使用缓存组件提高性能。</p>
+<pre><code>storage.backend=hbase  
+storage.hostname=100.100.101.1
+storage.port=2181
+
+cache.db-cache = true
+cache.db-cache-clean-wait = 20
+cache.db-cache-time = 180000
+cache.db-cache-size = 0.5
+</code></pre><p>1.3、 BerkeleyDB</p>
+<p>设置titan使用BerkeleyDB与ElasticSearch 嵌入式持久性引擎作为嵌入式引擎系统</p>
+<pre><code>storage.backend=berkeleyje
+storage.directory=/tmp/graph
+
+index.search.backend=elasticsearch
+index.search.directory=/tmp/searchindex
+index.search.elasticsearch.client-only=false
+index.search.elasticsearch.local-mode=true
+</code></pre><p>1.4、另外的一些配置示例</p>
+<p>在titan的conf目录下有几个配置文件，使用TitanFactory.open(“…”)打开这些文件</p>
+<p>使用默认的配置文件连接到Cassandra：</p>
+<pre><code>graph = TitanFactory.open(&quot;conf/titan-cassandra.properties&quot;)
+</code></pre><p>使用默认的配置文件连接到Hbase：</p>
+<pre><code>graph = TitanFactory.open(&quot;conf/titan-hbase.properties&quot;)
+</code></pre><p>2、TitanFactory 使用</p>
+<p>2.1 REPL</p>
+<p>titan分布中包含一个命令行与titan进行交互更容易些，启用.bin/gremlin.sh（Unix/Linux）或者bin/gremlin.bat(Windows)启动，然后使用TitanFactory打开可访问的配置文件获取g。（g为TitanGraph）</p>
+<pre><code>g = TitanFactory.open(‘path/to/configuration.properties’)
+</code></pre><p>2.2、TitanFactory也可基于JVM应用程序来打开嵌入太阳神图形的实例，这种情况下下，Titan是用过使用JavaApI的方式进行调用的。</p>
+<p>2.3 如果titan图数据库集群已经配置完成，或者后端存储需要定义，TitanFactory接受存储后端的名称和主机名及目录需要使用冒号分割。</p>
+<pre><code>g = TitanFactory.open(‘cassandra:localhost’)
+
+g = TitanFactory.open(‘berkeleyje:/tmp/graph’)
+</code></pre><p>3、Titan Server</p>
+<p>如果要远程连接titan或者另一个进程通过客户端与titan进行交互，则titan服务器需要配置并启动。在内部，titan采用的tinkerpop堆栈的Rexster服务器组件处理客户端请求。因此，在配置titan服务器通过Rexster配置文件来实现的。</p>
+<p>titan具体的配置选项在Rexster配置文件graphs来添加</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;rexster&gt;
+  ...
+  &lt;graphs&gt;
+&lt;graph&gt;
+  &lt;graph-name&gt;titanexample&lt;/graph-name&gt;
+  &lt;graph-type&gt;com.thinkaurelius.titan.tinkerpop.rexster.TitanGraphConfiguration&lt;/graph-type&gt;
+  &lt;graph-read-only&gt;false&lt;/graph-read-only&gt;
+  &lt;properties&gt;
+    &lt;storage.backend&gt;berkeleyje&lt;/storage.backend&gt;
+    &lt;storage.directory&gt;/tmp/titan&lt;/storage.directory&gt;
+    &lt;storage.buffer-size&gt;100&lt;/storage.buffer-size&gt;
+  &lt;/properties&gt;
+  &lt;extensions&gt;
+    &lt;allows&gt;
+      &lt;allow&gt;tp:gremlin&lt;/allow&gt;
+    &lt;/allows&gt;
+  &lt;/extensions&gt;
+&lt;/graph&gt;
+  &lt;/graphs&gt;
+&lt;/rexster&gt;
+</code></pre><p>3.1 服务器分布</p>
+<p>titan zip文件中包含一个快输启动的服务器组件，它的功能受限，但是可以更容易的使用Rexster和Titan。调用bin/titan.sh -c Rexster配置文件的路径。</p>
+<p>4、全局配置</p>
+<p>titan分为局部与全局配置之分。本地配置选项适用于一个titan示例。全局配置选项适用于一个集群中。具体的来说，titan分为以下5中配置。</p>
+<ul>
+<li>LOCAL：适用于单个titan实例与初始化titan实例时提供的配置中指定。</li>
+<li>MASKABLE：这些配置选项可以覆盖由本地配置文件中的配置选项，如果本地文件中不指定选项，将其值从全局titan集群配置中读取。</li>
+<li>GLOBAL：这些选项是从集群中配置文件中读取，不能在一个实例的基础上覆盖。</li>
+<li>GLOBAL_OFFLINE：像GLOBAL，但是改变这些选项需要集群重新启动，以确保该值是在整个集群中相同。</li>
+<li>FIXED： 像 GLOBAL，一旦titan集群初始化值不能改变。</li>
+</ul>
+<p>当集群中的第一个titan实例启动时，全局配置选项从提供本地配置文件进行初始化。随后的改变是通过Titan’s management API来完成全局配置选项。要访问API，需要从一个打开的titan实例中调用g.getManagementSystem()；例如，要改变一个titan集群上的默认缓存的行为如下：</p>
+<pre><code>mgmt = g.getManagementSystem()
+mgmt.get(‘cache.db-cache’)
+//Prints the current config setting
+mgmt.set(‘cache.db-cache’,true)
+//Changes option
+mgmt.get(‘cache.db-cache’)
+//Prints ‘true’
+mgmt.commit()
+//Changes take effect
+</code></pre><p>参考titan官网文档进行整理一部分内容，小忍今天就先到这里。未完待续……</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/titan-图数据库/">titan 图数据库</a>
+  </div>
+
+        
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+
+<nav id="pagination" >
+    
+    
+    <a href="/2015/12/17/《初入titan图数据库》学习笔记（一）/" class="alignright next" >下一頁</a>
+    
+    <div class="clearfix"></div>
+</nav>
+
+<!-- ��˵���ۿ� start -->
+ <div class="ds-thread" data-thread-key="/2015/12/17/《初入titan图数据库》学习笔记（二）/" data-title="《初入titan图数据库》学习笔记（二）" data-url="http://yoursite.com/2015/12/17/《初入titan图数据库》学习笔记（二）/"></div>
+<!-- ��˵���ۿ� end -->
+<!-- ��˵����JS���� start (һ����ҳֻ������һ��) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"wheresweet"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- ��˵����JS���� end -->
+<section id="comment">
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">標籤</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/titan-图数据库/">titan 图数据库</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 wheresweet
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
