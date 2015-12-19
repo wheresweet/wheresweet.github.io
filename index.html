@@ -82,89 +82,22 @@ var _hmt = _hmt || [];
       
         <h2 id="u521D_u5165titan_u56FE_u6570_u636E_u5E93"><a href="#u521D_u5165titan_u56FE_u6570_u636E_u5E93" class="headerlink" title="初入titan图数据库"></a>初入titan图数据库</h2><p><strong><em>小忍最近是各种狼闲的不顺，目前状态为别人宽心我宽肺的状态；把搁置已久的titan重新学习一把，年龄大了，距离老年痴呆越来越近了，3个月前的程序竟废了一天的时间运行成功，想想也是醉了，以此作为教训，言归正传</em></strong></p>
 <p><strong>titan的安装使用【windows】</strong></p>
-<p> 1、下载<a href="https://github.com/thinkaurelius/titan/wiki/Downloads" target="_blank" rel="external">https://github.com/thinkaurelius/titan/wiki/Downloads</a> 安装文件【这里用的是0.5.4】版本</p>
+<p> 1、下载<a href="https://github.com/thinkaurelius/titan/wiki/Downloads">https://github.com/thinkaurelius/titan/wiki/Downloads</a> 安装文件【这里用的是0.5.4】版本</p>
 <p>2、解压文件后在conf文件下修改titan-cassandra-es.properties文件，此文件中设置了对搜索引擎（es），Cassandra数据存储的配置，分别为：</p>
 <pre><code>storage.backend=cassandra
 storage.hostname=192.168.90.11    本地的Cassandra
 
 index.search.backend=elasticsearch
 index.search.hostname=192.168.90.11 本地es服务
-</code></pre><p>设置完之后，titan中的数据会存入到Cassandra中，对于使用es的使用还未做深入的研究。</p>
-<pre><code>&lt;!--more--&gt;
-</code></pre><p>3、想要运行titan的程序需要使用到elasticsearch，Cassandra，下面是针对elasticsearch，Cassandra的安装使用(基于windows)</p>
-<p>首先、下载 <a href="https://www.elastic.co/downloads/elasticsearch" target="_blank" rel="external">https://www.elastic.co/downloads/elasticsearch</a><br>使用的是1.7.2版本</p>
-<p>第二、解压安装文件有一下几个包：<br>bin是运行脚本，config是设置文件，lib是依赖的包。<br>启动解压目录下的bin名称的文件夹，双击elasticsearch.bat文件，就可以启动elasticsearch；</p>
-<p>第三、启动成功后,会在解压目录下增加2个文件件,data用于数据存储, logs用于日志记录,可以自己创建plugins目录中用于放置自己的插件。</p>
-<p>此时可以在浏览器中输入: <a href="http://localhost:9200/" target="_blank" rel="external">http://localhost:9200/</a></p>
-<p>“ok” : true,<br>“status” : 200,<br>“name” : “Glob Herman”,<br>“version” : { “number” : “0.20.6”, “snapshot_build” : false }, “tagline” : “You Know, for Search” }</p>
-<p>出现上面结果,表示成功启动！</p>
-<p>4、Cassandra的安装(windows)<br>首先、在官网下载，需注意的一点是，由于我下载的是3.1版本，本机使用的jdk为7版本，导致启动失败，需要jdk8的支撑 所以，小忍捯饬了半天换成2.1.5版本的Cassandra。在虚拟机及本地都进行测试成功。</p>
-<p>第二、修改apache-cassandra-2.1.5\bin\目录下的Cassandra.bat文件对jvm的设置,默认的</p>
-<pre><code>set JAVA_OPTS=-ea^
- -javaagent:&quot;%CASSANDRA_HOME%\lib\jamm-0.3.0.jar&quot;^
- -Xms2G^
- -Xmx2G^
-</code></pre><p>修改为：</p>
-<pre><code>set JAVA_OPTS=-ea^
- -javaagent:&quot;%CASSANDRA_HOME%\lib\jamm-0.3.0.jar&quot;^
- -Xms512M^
- -Xmx512M^
-</code></pre><p>第三、修改apache-cassandra-2.1.5\conf\cassandra.yaml文件下针对ip的设置，及集群的设置</p>
-<pre><code> listen_address: 192.168.90.11
- rpc_address:192.168.90.11
-- seeds: &quot;192.168.90.11&quot; 这里可以是多个使用逗号隔开
-</code></pre><p>OK，启动bin目录下的cassandra.bat文件。使用nodetool.bat tatus 查看Cassandra是否启动成功。</p>
-<p>查看Cassandra中的数据库中的数据送cql语句进行查询，可以进入bin目录下的cqlsh.bat（由于window对cqlsh支持需要安装一些其他的组件狼闲的，所以小忍最终还是运行到linux）可直接进入./cqlsh 执行cql的语法。由于刚刚把Cassandra给安装成功，小试牛刀了一下几个命令，</p>
-<pre><code>describe keyspaces  查看有哪些数据库
-
-CREATE KEYSPACE IF NOT EXISTS myCas WITH REPLICATION = {&apos;class&apos;: &apos;SimpleStrategy&apos;,&apos;replication_factor&apos;:1};创建myCas数据库
-
-
- use mycas; 使用mycas数据库
-
-create table user(id int , user_name varchar,PRIMARY KEY (id)); 创建表
-
-describe tables  显示哪些表
-
-insert into user (id,user_name) values(1,&apos;zhangsan&apos;)；插入数据
-
-
-select * from user; 查询
-</code></pre><p>5、终于到titan图数据的应用了，小忍这里使用的是java api 来操作titan图数据库的。</p>
-<p>首先、项目工程里需要依赖如下几个jar包：包括对titan，es，Cassandra的依赖</p>
-<pre><code>&lt;dependency&gt;
-        &lt;groupId&gt;com.thinkaurelius.titan&lt;/groupId&gt;
-        &lt;artifactId&gt;titan-core&lt;/artifactId&gt;
-        &lt;version&gt;${titan.version}&lt;/version&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;com.thinkaurelius.titan&lt;/groupId&gt;
-        &lt;artifactId&gt;titan-cassandra&lt;/artifactId&gt;
-        &lt;version&gt;${titan.version}&lt;/version&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;com.thinkaurelius.titan&lt;/groupId&gt;
-        &lt;artifactId&gt;titan-es&lt;/artifactId&gt;
-        &lt;version&gt;${titan.version}&lt;/version&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;com.thinkaurelius.titan&lt;/groupId&gt;
-        &lt;artifactId&gt;titan-lucene&lt;/artifactId&gt;
-        &lt;version&gt;${titan.version}&lt;/version&gt;
-    &lt;/dependency&gt;
-</code></pre><p>第二、在配置文件中需要指定titan-cassandra-es.properties的路径</p>
-<pre><code>cassandra_es_path=E:\\titan\\titan-0.5.4-hadoop2\\titan-0.5.4-hadoop2\\conf\\titan-cassandra-es.properties
-</code></pre><p>第三、编码应用</p>
-<p>介绍下几个重要的类：<br>TitanGraph ：titan图数据的实现接口，主要用来进行图数据中的一系列的操作，包括创建表结构，获取图数据的管理器，进行查询等。</p>
-<p>TitanFactory： 产生TitanGraph的工厂，参数是titan-cassandra-es.properties地址路径。</p>
-<p>TitanManagement： 图数据管理器，用来创建节点，索引，主键，边等图数据的表结构，使用commit（）进行提交。</p>
-<p>TitanTransaction ： 可向事务中添加节点（Vertex）</p>
-<p>小忍也是刚刚接触titan图数据库，了解尚浅，附上代码，有助于理解一下下吧。</p>
-
+</code></pre><p>设置完之后，titan中的数据会存入到Cassandra中，对于使用es的使用还未做深入的研究。<br>
       
     </div>
     <footer>
       
+        
+          <div class="alignleft">
+            <a href="/2015/12/17/《初入titan图数据库》学习笔记（一）/#more" class="more-link">阅读更多</a>
+          </div>
         
         
       

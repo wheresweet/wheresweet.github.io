@@ -88,9 +88,8 @@ storage.hostname=192.168.90.11    本地的Cassandra
 
 index.search.backend=elasticsearch
 index.search.hostname=192.168.90.11 本地es服务
-</code></pre><p>设置完之后，titan中的数据会存入到Cassandra中，对于使用es的使用还未做深入的研究。</p>
-<pre><code>&lt;!--more--&gt;
-</code></pre><p>3、想要运行titan的程序需要使用到elasticsearch，Cassandra，下面是针对elasticsearch，Cassandra的安装使用(基于windows)</p>
+</code></pre><p>设置完之后，titan中的数据会存入到Cassandra中，对于使用es的使用还未做深入的研究。<br>    <a id="more"></a></p>
+<p>3、想要运行titan的程序需要使用到elasticsearch，Cassandra，下面是针对elasticsearch，Cassandra的安装使用(基于windows)</p>
 <p>首先、下载 <a href="https://www.elastic.co/downloads/elasticsearch" target="_blank" rel="external">https://www.elastic.co/downloads/elasticsearch</a><br>使用的是1.7.2版本</p>
 <p>第二、解压安装文件有一下几个包：<br>bin是运行脚本，config是设置文件，lib是依赖的包。<br>启动解压目录下的bin名称的文件夹，双击elasticsearch.bat文件，就可以启动elasticsearch；</p>
 <p>第三、启动成功后,会在解压目录下增加2个文件件,data用于数据存储, logs用于日志记录,可以自己创建plugins目录中用于放置自己的插件。</p>
