@@ -173,7 +173,18 @@ mgmt.get(‘cache.db-cache’)
 //Prints ‘true’
 mgmt.commit()
 //Changes take effect
-</code></pre><p>参考titan官网文档进行整理一部分内容，小忍今天就先到这里。未完待续……</p>
+</code></pre><p>5、Changing Offline Options（更改脱机选项）</p>
+<p>更改配置选项不影响运行的情况下，仅适用于新开启的titan实例。更改<br>GLOBAL_OFFLINE配置选项需要重新启动集群，以使更改立即生效的所有实例。要改变GLOBAL_OFFLINE选项按照下列步骤操作：</p>
+<ul>
+<li>关闭所有，但是一个titan实例连接到集群。</li>
+<li>确保所有运行的事务关闭</li>
+<li>确保任何新的事务启动（即集群必须处于脱机状态）</li>
+<li>打开管理API</li>
+<li>更改配置选项</li>
+<li>调用commit将自动关闭图表实例</li>
+<li>重新启动所有实例</li>
+</ul>
+<p>参考titan官网文档进行整理一部分内容，小忍今天就先到这里。未完待续……</p>
 
       
     </div>
